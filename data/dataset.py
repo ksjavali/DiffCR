@@ -7,8 +7,8 @@ import random
 import numpy as np
 import tifffile as tiff
 
-# from .util.mask import (bbox2mask, brush_stroke_mask,
-#                         get_irregular_mask, random_bbox, random_cropping_bbox)
+from .util.mask import (bbox2mask, brush_stroke_mask,
+                        get_irregular_mask, random_bbox, random_cropping_bbox)
 
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',
@@ -55,6 +55,7 @@ class Sen2_MTC_New_Multi(data.Dataset):
                 os.path.join(self.data_root, 'val.txt'), dtype=str)
         elif mode == 'test':
             self.data_augmentation = None
+            print(os.getcwd())
             self.tile_list = np.loadtxt(
                 os.path.join(self.data_root, 'test.txt'), dtype=str)
 
@@ -132,11 +133,7 @@ class Sen2_MTC_New_Multi(data.Dataset):
         return image
 
 
-<<<<<<< HEAD
-class Sen2_MTC_New1(data.Dataset):
-=======
 class Sen2_MTC_New(data.Dataset):
->>>>>>> a13ebef0541ec6fe26f52d5598a109d848a51b9c
     def __init__(self, data_root, mode='train'):
         self.data_root = data_root
         self.mode = mode
@@ -231,103 +228,6 @@ class Sen2_MTC_New(data.Dataset):
 
         return image
 
-<<<<<<< HEAD
-class Sen2_MTC_New2(data.Dataset):
-    def __init__(self, data_root, mode='train'):
-        self.data_root = data_root
-        self.mode = mode
-        self.filepair = []
-        self.image_name = []
-
-        if mode == 'train':
-            self.tile_list = np.loadtxt(os.path.join(
-                self.data_root, 'train.txt'), dtype=str)
-        elif mode == 'val':
-            self.data_augmentation = None
-            self.tile_list = np.loadtxt(
-                os.path.join(self.data_root, 'val.txt'), dtype=str)
-        elif mode == 'test':
-            self.data_augmentation = None
-            self.tile_list = np.loadtxt(
-                os.path.join(self.data_root, 'test.txt'), dtype=str)
-
-        for tile in self.tile_list:
-            image_name_list = [image_name.split('.')[0] for image_name in os.listdir(
-                os.path.join(self.data_root, 'Sen2_MTC', tile, 'cloudless'))]
-                
-
-            for image_name in image_name_list:
-                image_cloud_path0 = os.path.join(
-                    self.data_root, 'Sen2_MTC', tile, 'cloud', image_name + '_0.tif')
-                image_cloud_path1 = os.path.join(
-                    self.data_root, 'Sen2_MTC', tile, 'cloud', image_name + '_1.tif')
-                image_cloud_path2 = os.path.join(
-                    self.data_root, 'Sen2_MTC', tile, 'cloud', image_name + '_2.tif')
-                image_cloudless_path = os.path.join(
-                    self.data_root, 'Sen2_MTC', tile, 'cloudless', image_name + '.tif')
-
-                self.filepair.append(
-                    [image_cloud_path0, image_cloud_path1, image_cloud_path2, image_cloudless_path])
-                self.image_name.append(image_name)
-
-        self.augment_rotation_param = np.random.randint(
-            0, 4, len(self.filepair))
-        self.augment_flip_param = np.random.randint(0, 3, len(self.filepair))
-        self.index = 0
-
-    def __getitem__(self, index):
-        cloud_image_path0, cloud_image_path1, cloud_image_path2 = self.filepair[
-            index][0], self.filepair[index][1], self.filepair[index][2]
-        cloudless_image_path = self.filepair[index][3]
-
-        image_cloud0 = self.image_read(cloud_image_path0)
-        image_cloud1 = self.image_read(cloud_image_path1)
-        image_cloud2 = self.image_read(cloud_image_path2)
-        image_cloudless = self.image_read(cloudless_image_path)
-
-        # return [image_cloud0, image_cloud1, image_cloud2], image_cloudless, self.image_name[index]
-        ret = {}
-        ret['gt_image'] = image_cloudless[:3, :, :]
-        if self.mode=="train":
-            ret['cond_image'] = torch.cat(random.sample((image_cloud0[:3, :, :], image_cloud1[:3, :, :], image_cloud2[:3, :, :]), 2))
-        else:
-            ret['cond_image'] = torch.cat(image_cloud0[:3, :, :], image_cloud1[:3, :, :])
-        ret['path'] = self.image_name[index]+".png"
-        return ret
-
-    def __len__(self):
-        return len(self.filepair)
-
-    def image_read(self, image_path):
-        img = tiff.imread(image_path)
-        img = (img / 1.0).transpose((2, 0, 1))
-
-        if self.mode == 'train':
-            if not self.augment_flip_param[self.index // 4] == 0:
-                img = np.flip(img, self.augment_flip_param[self.index//4])
-            if not self.augment_rotation_param[self.index // 4] == 0:
-                img = np.rot90(
-                    img, self.augment_rotation_param[self.index // 4], (1, 2))
-            self.index += 1
-
-        if self.index // 4 >= len(self.filepair):
-            self.index = 0
-
-        image = torch.from_numpy((img.copy())).float()
-        image = image / 10000.0
-        mean = torch.as_tensor([0.5, 0.5, 0.5, 0.5],
-                               dtype=image.dtype, device=image.device)
-        std = torch.as_tensor([0.5, 0.5, 0.5, 0.5],
-                              dtype=image.dtype, device=image.device)
-        if mean.ndim == 1:
-            mean = mean.view(-1, 1, 1)
-        if std.ndim == 1:
-            std = std.view(-1, 1, 1)
-        image.sub_(mean).div_(std)
-
-        return image
-=======
->>>>>>> a13ebef0541ec6fe26f52d5598a109d848a51b9c
 
 class InpaintDataset(data.Dataset):
     def __init__(self, data_root, mask_config={}, data_len=-1, image_size=[256, 256], loader=pil_loader):

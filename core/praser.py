@@ -38,6 +38,7 @@ def init_obj(opt, logger, *args, default_file_name='default file', given_module=
         kwargs.update(modify_kwargs)
         ''' import class or function with args '''
         if isinstance(attr, type): 
+            print(*args)
             ret = attr(*args, **kwargs)
             ret.__name__  = ret.__class__.__name__
         elif isinstance(attr, FunctionType): 

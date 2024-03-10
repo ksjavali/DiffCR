@@ -44,7 +44,7 @@ class Network(BaseNetwork):
         elif module_name == "ours_concat_no_condskip_nodrop_noparams_splitca_double_encoder_decoder_middle_fusion":
             from .ours.ours_concat_no_condskip_nodrop_noparams_splitca_double_encoder_decoder_middle_fusion import UNet
         elif module_name == "ours_double_encoder_splitcaCond_splitcaUnet":
-            from .ours.ours_double_encoder_splitcaCond_splitcaUnet import UNet
+            from .ours.nafnet_double_encoder_splitcaCond_splitcaUnet import UNet
         elif module_name == "ours_double_encoder_splitcaCond":
             from .ours.ours_double_encoder_splitcaCond import UNet
         elif module_name == "ours_double_encoder_splitcaUnet":
