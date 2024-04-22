@@ -54,9 +54,9 @@
         },
         "test": {
             "which_dataset": {
-                "name": "Sen2_MTC_New_Multi",
+                "name": "multipleImage",
                 "args": {
-                    "data_root": "Sen2_MTC_New_Multi/dataset",
+                    "data_root": "/content",
                     "mode": "test"
                 }
             },
