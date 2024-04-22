@@ -5,7 +5,9 @@ from models.metric import inception_score
 import numpy as np
 import glob
 import os
-from skimage.measure import compare_psnr, compare_ssim
+from skimage.metrics import peak_signal_noise_ratio as compare_psnr
+from skimage.metrics import structural_similarity as compare_ssim
+
 from PIL import Image
 from rich.progress import track
 
